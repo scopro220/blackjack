@@ -1,0 +1,22 @@
+{
+  "name": "blackjack",
+  "version": "1.0.0",
+  "description": "BlackJack game",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/scopro220/blackjack.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/scopro220/blackjack/issues"
+  },
+  "homepage": "https://github.com/scopro220/blackjack#readme",
+  "dependencies": {
+    "cardsJS": "^1.1.1"
+  }
+}
