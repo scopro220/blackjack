@@ -1,6 +1,9 @@
 const playerHand = document.querySelectorAll(".player");
 const dealerHand = document.querySelectorAll(".dealer");
 const startGame = document.querySelector(".shuffle-btn");
+const hitBtn = document.querySelectorAll(".hit");
+const stayBtn = document.querySelectorAll(".stay");
+const doubleBtn = document.querySelectorAll(".double");
 const dealCardsBtn = document.querySelector(".deal-cards-btn");
 const totalCardsOnTable = document.querySelectorAll("img");
 const numberOfDecks = 1;
@@ -37,10 +40,10 @@ let deck = [
   "9S",
   "9D",
   "9C",
-  "10H",
-  "10S",
-  "10D",
-  "10C",
+  "TH",
+  "TS",
+  "TD",
+  "TC",
   "JH",
   "JS",
   "JD",
@@ -93,10 +96,9 @@ function dealCards() {
       newCard.setAttribute("src", `cards/${dealtCard}.svg`);
       newCard.setAttribute("style", "margin-top: 10px;");
       if (playerHand[j].childElementCount > 0) {
-        newCard.setAttribute("style", "margin-left: -65px;");
+        newCard.setAttribute("style", "margin-top: 10px; margin-left: -65px;");
       }
       playerHand[j].appendChild(newCard);
-      console.log(activeDeck);
     }
     for (j = dealerHand.length - 1; j > 0; j -= 1) {
       let dealtCard = activeDeck.shift();
@@ -105,7 +107,7 @@ function dealCards() {
       newCard.setAttribute("src", `cards/${dealtCard}.svg`);
       newCard.setAttribute("style", "margin-top: 10px;");
       if (dealerHand[j].childElementCount > 0) {
-        newCard.setAttribute("style", "margin-left: -65px;");
+        newCard.setAttribute("style", "margin-top: 10px; margin-left: -65px;");
       }
       if (i === 1) {
         newDownCard = document.createElement("img");
@@ -119,16 +121,12 @@ function dealCards() {
       } else {
         dealerHand[j].appendChild(newCard);
       }
-      console.log(activeDeck);
     }
   }
+  getValueofCardNonAce();
 }
 
-// let gameOver = true;
 function removeCards() {
-  // if (gameOver) {
-
-  // }
   for (let i = 0; i < playerHand.length; i++) {
     if (playerHand[i].children.length > 0) {
       for (let j = playerHand[i].children.length - 1; j >= 0; j--) {
@@ -136,6 +134,15 @@ function removeCards() {
       }
     }
   }
+  for (let i = 0; i < dealerHand.length; i++) {
+    if (dealerHand[i].children.length > 0) {
+      for (let j = dealerHand[i].children.length - 1; j >= 0; j--) {
+        dealerHand[i].removeChild(dealerHand[i].children[j]);
+      }
+    }
+  }
+  newCard = undefined;
+  newDownCard = undefined;
 }
 
 function unhideDealerDownCard() {
@@ -150,5 +157,67 @@ function deckOfCardsIsLow() {
   }
 }
 
+let playerOneScore = 0;
+let playerTwoScore = 0;
+let playerThreeScore = 0;
+let playerFourScore = 0;
+let dealerScore = 0;
+let total = 0;
+
+function getValueofCardNonAce() {
+  let cardValue = 0;
+  for (let i = 0; i < playerHand[3].children.length; i++) {
+    let start = playerHand[3].children[i].getAttribute("src").indexOf("/");
+    let end = playerHand[3].children[i].getAttribute("src").indexOf(".");
+    let card = playerHand[3].children[i]
+      .getAttribute("src")
+      .slice(start + 1, end - 1);
+    if (card === "K" || card === "Q" || card === "J" || card === "T") {
+      cardValue += 10;
+    } else if (card === "A") {
+      cardValue;
+    } else {
+      cardValue += parseInt(card);
+    }
+    if (checkTotalGreaterThanTwentyOne(cardValue)) {
+      cardValue = "bust";
+      console.log(cardValue);
+      return cardValue;
+    }
+  }
+  console.log(cardValue);
+  return cardValue;
+}
+
+function checkTotalGreaterThanTwentyOne(val) {
+  if (val > 21) {
+    return true;
+  }
+}
+
+function hitPlayer() {
+  let dealtCard = activeDeck.shift();
+  newCard = document.createElement("img");
+  newCard.setAttribute("class", "card");
+  newCard.setAttribute("src", `cards/${dealtCard}.svg`);
+  newCard.setAttribute("style", "margin-top: 10px; margin-left: -65px;");
+  playerHand[3].appendChild(newCard);
+  getValueofCardNonAce();
+  bustPlayer();
+}
+
+function playerStay() {
+  // move to next player
+}
+
+function bustPlayer() {
+  if (getValueofCardNonAce() === "bust") {
+    hitBtn[3].disabled = true;
+    stayBtn[3].disabled = true;
+    doubleBtn[3].disabled = true;
+  }
+}
+
 startGame.addEventListener("click", setActiveDeck);
 dealCardsBtn.addEventListener("click", dealCards);
+hitBtn[3].addEventListener("click", hitPlayer);
