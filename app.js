@@ -125,7 +125,7 @@ function dealCards() {
     console.log(activeDeck);
   }
   dealerHiddenCard = newCard;
-  getValueofCardNonAce();
+  getValueofCardNonAcePlayer();
 }
 
 function removeCards() {
@@ -165,7 +165,7 @@ let playerFourScore = 0;
 let dealerScore = 0;
 let total = 0;
 
-function getValueofCardNonAce() {
+function getValueofCardNonAcePlayer() {
   let cardValue = 0;
   for (let i = 0; i < playerHand[3].children.length; i++) {
     let start = playerHand[3].children[i].getAttribute("src").indexOf("/");
@@ -190,6 +190,33 @@ function getValueofCardNonAce() {
   return cardValue;
 }
 
+function dealerTotal() {
+  let cardValue = 0;
+  let start = dealerHand.children[0].getAttribute("src").indexOf("/");
+  let end = dealerHand.children[0].getAttribute("src").indexOf(".");
+  let card = dealerHand.children[0]
+    .getAttribute("src")
+    .slice(start + 1, end - 1);
+  if (card === "K" || card === "Q" || card === "J" || card === "T") {
+    cardValue += 10;
+  } else if (card === "A") {
+    cardValue += 11;
+  } else {
+    cardValue += parseInt(card);
+  }
+  start = dealerHiddenCard.getAttribute("src").indexOf("/");
+  end = dealerHiddenCard.getAttribute("src").indexOf(".");
+  card = dealerHiddenCard.getAttribute("src").slice(start + 1, end - 1);
+  if (card === "K" || card === "Q" || card === "J" || card === "T") {
+    cardValue += 10;
+  } else if (card === "A") {
+    cardValue += 11;
+  } else {
+    cardValue += parseInt(card);
+  }
+  return cardValue;
+}
+
 function checkTotalGreaterThanTwentyOne(val) {
   if (val > 21) {
     return true;
@@ -203,19 +230,30 @@ function hitPlayer() {
   newCard.setAttribute("src", `cards/${dealtCard}.svg`);
   newCard.setAttribute("style", "margin-top: 10px; margin-left: -65px;");
   playerHand[3].appendChild(newCard);
-  getValueofCardNonAce();
+  getValueofCardNonAcePlayer();
   bustPlayer();
 }
 
 function playerStay() {
+  hitBtn[3].disabled = true;
+  stayBtn[3].disabled = true;
+  doubleBtn[3].disabled = true;
   // move to next player
 }
 
 function bustPlayer() {
-  if (getValueofCardNonAce() === "bust") {
+  if (getValueofCardNonAcePlayer() === "bust") {
     hitBtn[3].disabled = true;
     stayBtn[3].disabled = true;
     doubleBtn[3].disabled = true;
+  }
+}
+
+let gameOver = false;
+
+function blackJackDealer() {
+  if (dealerTotal() === 21 && dealerHand.children.length === 2) {
+    gameOver = true;
   }
 }
 
