@@ -11,7 +11,7 @@ body {
 
 .container {
   width: 80%;
-  margin: 25px auto;
+  margin: 25px auto 0;
   text-align: center;
 }
 
@@ -28,14 +28,13 @@ h1 {
   background-color: #121212;
   width: 55%;
   height: 300px;
-  margin: 35px auto 0;
+  margin: 10px auto 0;
   display: flex;
   justify-content: space-evenly;
   align-items: center;
 }
 
 .chip-column {
-  /* border-radius: 45px; */
   background: #121212;
   box-shadow: inset 11px 11px 22px #191919, inset -11px -11px 22px #292929;
   width: 9%;
@@ -95,7 +94,7 @@ h1 {
 }
 
 .player-container {
-  margin: 75px auto;
+  margin: 50px auto 0;
   display: flex;
   justify-content: space-evenly;
 }
@@ -107,4 +106,44 @@ h1 {
   margin: 0 auto;
   display: flex;
   justify-content: space-around;
+}
+
+button {
+  background-color: #fff;
+  color: black;
+  border-radius: 15px;
+  padding: 5px 15px;
+  margin: 3px;
+  border: none;
+}
+
+button:hover {
+  background-color: black;
+  color: #fff;
+}
+
+button:focus {
+  outline: none;
+  box-shadow: none;
+}
+
+.player-btn-container,
+.main-btn-container {
+  display: flex;
+  justify-content: space-around;
+}
+
+.main-btn-container {
+  width: 55%;
+  margin: 0 auto;
+}
+
+.shuffle-btn,
+.deal-cards-btn {
+  width: 20%;
+}
+
+.player-btn {
+  width: 100%;
+  margin-top: 8px;
 }

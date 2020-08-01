@@ -16,12 +16,17 @@
         <span class="heart red">♥</span>
         <span class="club">♣</span>
         <span class="diamond red">♦</span>
-        <span class="spade">♠️</span> BlackJack
+        <span class="spade">♠️</span>
+        <span>BlackJack</span>
         <span class="heart red">♥</span>
         <span class="club">♣</span>
         <span class="diamond red">♦</span>
         <span class="spade">♠</span>
       </h1>
+      <span class="main-btn-container">
+        <button class="shuffle-btn">Shuffle</button>
+        <button class="deal-cards-btn">Deal Cards</button>
+      </span>
       <div class="chip-container">
         <div class="chip-column">
           <div class="chip red-chip"></div>
@@ -302,80 +307,58 @@
         <div class="dealer-hand-container">
           <h2 class="dealer">Dealer</h2>
           <div class="cards">
-            <div class="hand hhand-compact">
-              <img class="card" src="cards/AS.svg" />
-              <img
-                class="card"
-                src="cards/BLUE_BACK.svg"
-                style="margin-left: -65px; margin-top: 10px;"
-              />
-            </div>
+            <div class="hand hhand-compact dealer"></div>
           </div>
         </div>
       </div>
       <div class="player-container">
-        <div class="player-hand-container">
+        <div class="player-hand-container-4">
           <div class="cards">
-            <div class="hand hhand-compact">
-              <img class="card" src="cards/10H.svg" />
-              <img
-                class="card"
-                src="cards/KS.svg"
-                style="margin-left: -65px; margin-top: 10px;"
-              />
-            </div>
+            <div class="hand hhand-compact player"></div>
           </div>
-          <h2 class="player">Player 4</h2>
+          <h2>Player 4</h2>
+          <span class="player-btn-container">
+            <button class="player-btn hit">Hit</button>
+            <button class="player-btn stay">Stay</button>
+            <button class="player-btn double">Double</button>
+          </span>
         </div>
-        <div class="player-hand-container">
+        <div class="player-hand-container-3">
           <div class="cards">
-            <div class="hand hhand-compact">
-              <img class="card" src="cards/6S.svg" />
-              <img
-                class="card"
-                src="cards/5S.svg"
-                style="margin-left: -65px; margin-top: 10px;"
-              />
-              <img
-                class="card"
-                src="cards/5C.svg"
-                style="
-                  margin-left: -45px;
-                  margin-top: 10px;
-                  transform: rotate(90deg);
-                "
-              />
-            </div>
+            <div class="hand hhand-compact player"></div>
           </div>
-          <h2 class="player">Player 3</h2>
+          <h2>Player 3</h2>
+          <span class="player-btn-container">
+            <button class="player-btn hit">Hit</button>
+            <button class="player-btn stay">Stay</button>
+            <button class="player-btn double">Double</button>
+          </span>
         </div>
-        <div class="player-hand-container">
+        <div class="player-hand-container-2">
           <div class="cards">
-            <div class="hand hhand-compact">
-              <img class="card" src="cards/8D.svg" />
-              <img
-                class="card"
-                src="cards/4C.svg"
-                style="margin-left: -65px; margin-top: 10px;"
-              />
-            </div>
+            <div class="hand hhand-compact player"></div>
           </div>
-          <h2 class="player">Player 2</h2>
+          <h2>Player 2</h2>
+          <span class="player-btn-container">
+            <button class="player-btn hit">Hit</button>
+            <button class="player-btn stay">Stay</button>
+            <button class="player-btn double">Double</button>
+          </span>
         </div>
-        <div class="player-hand-container">
+        <div class="player-hand-container-1">
           <div class="cards">
-            <div class="hand hhand-compact">
-              <img class="card" src="cards/2H.svg" />
-              <img
-                class="card"
-                src="cards/3S.svg"
-                style="margin-left: -65px; margin-top: 15px;"
-              />
-            </div>
+            <div class="hand hhand-compact player"></div>
           </div>
-          <h2 class="player">Player 1</h2>
+          <h2>Player 1</h2>
+          <span class="player-btn-container">
+            <button class="player-btn hit">Hit</button>
+            <button class="player-btn stay">Stay</button>
+            <button class="player-btn double">Double</button>
+          </span>
         </div>
       </div>
     </div>
+
+    <script src="app.js"></script>
   </body>
 </html>
