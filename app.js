@@ -1,5 +1,5 @@
 const playerHand = document.querySelectorAll(".player");
-const dealerHand = document.querySelectorAll(".dealer");
+const dealerHand = document.querySelector(".dealer");
 const startGame = document.querySelector(".shuffle-btn");
 const hitBtn = document.querySelectorAll(".hit");
 const stayBtn = document.querySelectorAll(".stay");
@@ -65,6 +65,7 @@ const hideCard = "BLUE_BACK";
 let activeDeck = [];
 let playerCount = 4;
 let newCard;
+let dealerHiddenCard;
 let newDownCard;
 
 function setActiveDeck() {
@@ -99,30 +100,31 @@ function dealCards() {
         newCard.setAttribute("style", "margin-top: 10px; margin-left: -65px;");
       }
       playerHand[j].appendChild(newCard);
+      console.log(activeDeck);
     }
-    for (j = dealerHand.length - 1; j > 0; j -= 1) {
-      let dealtCard = activeDeck.shift();
-      newCard = document.createElement("img");
-      newCard.setAttribute("class", "card");
-      newCard.setAttribute("src", `cards/${dealtCard}.svg`);
-      newCard.setAttribute("style", "margin-top: 10px;");
-      if (dealerHand[j].childElementCount > 0) {
-        newCard.setAttribute("style", "margin-top: 10px; margin-left: -65px;");
-      }
-      if (i === 1) {
-        newDownCard = document.createElement("img");
-        newDownCard.setAttribute("class", "card");
-        newDownCard.setAttribute("src", `cards/${hideCard}.svg`);
-        newDownCard.setAttribute(
-          "style",
-          "margin-top: 10px; margin-left: -65px;"
-        );
-        dealerHand[j].appendChild(newDownCard);
-      } else {
-        dealerHand[j].appendChild(newCard);
-      }
+    let dealtCard = activeDeck.shift();
+    newCard = document.createElement("img");
+    newCard.setAttribute("class", "card");
+    newCard.setAttribute("src", `cards/${dealtCard}.svg`);
+    newCard.setAttribute("style", "margin-top: 10px;");
+    if (dealerHand.childElementCount > 0) {
+      newCard.setAttribute("style", "margin-top: 10px; margin-left: -65px;");
     }
+    if (i === 1) {
+      newDownCard = document.createElement("img");
+      newDownCard.setAttribute("class", "card");
+      newDownCard.setAttribute("src", `cards/${hideCard}.svg`);
+      newDownCard.setAttribute(
+        "style",
+        "margin-top: 10px; margin-left: -65px;"
+      );
+      dealerHand.appendChild(newDownCard);
+    } else {
+      dealerHand.appendChild(newCard);
+    }
+    console.log(activeDeck);
   }
+  dealerHiddenCard = newCard;
   getValueofCardNonAce();
 }
 
@@ -134,20 +136,19 @@ function removeCards() {
       }
     }
   }
-  for (let i = 0; i < dealerHand.length; i++) {
-    if (dealerHand[i].children.length > 0) {
-      for (let j = dealerHand[i].children.length - 1; j >= 0; j--) {
-        dealerHand[i].removeChild(dealerHand[i].children[j]);
-      }
+  if (dealerHand.children.length > 0) {
+    for (let j = dealerHand.children.length - 1; j >= 0; j--) {
+      dealerHand.removeChild(dealerHand.children[j]);
     }
   }
+
   newCard = undefined;
   newDownCard = undefined;
 }
 
 function unhideDealerDownCard() {
-  dealerHand[1].removeChild(newDownCard);
-  dealerHand[1].appendChild(newCard);
+  dealerHand.removeChild(newDownCard);
+  dealerHand.appendChild(dealerHiddenCard);
 }
 
 function deckOfCardsIsLow() {
