@@ -4,6 +4,7 @@ const startGame = document.querySelector(".shuffle-btn");
 const hitBtn = document.querySelectorAll(".hit");
 const stayBtn = document.querySelectorAll(".stay");
 const doubleBtn = document.querySelectorAll(".double");
+const activePlayerHand = document.querySelectorAll(".player-hand-container");
 const dealCardsBtn = document.querySelector(".deal-cards-btn");
 const totalCardsOnTable = document.querySelectorAll("img");
 const numberOfDecks = 1;
@@ -63,10 +64,15 @@ let deck = [
 ];
 const hideCard = "BLUE_BACK";
 let activeDeck = [];
-let playerCount = 4;
+const playerCount = 4;
 let newCard;
 let dealerHiddenCard;
 let newDownCard;
+let playerOneScore = 0;
+let playerTwoScore = 0;
+let playerThreeScore = 0;
+let playerFourScore = 0;
+let dealerScore = 0;
 
 function setActiveDeck() {
   for (let i = 0; i < numberOfDecks; i++) {
@@ -125,10 +131,18 @@ function dealCards() {
     console.log(activeDeck);
   }
   dealerHiddenCard = newCard;
-  getValueofCardNonAcePlayer();
+  activePlayerHand[3].setAttribute("id", "active");
+  const allBtns = document.querySelector("#active").children[2].children;
+  for (let i = 0; i < allBtns.length; i++) {
+    allBtns[i].disabled = false;
+  }
+  getPlayerValue();
+  blackJackDealer();
 }
 
 function removeCards() {
+  const mainMessage = document.querySelector(".main-message");
+  const playerMessage = document.querySelectorAll(".player-blackjack-message");
   for (let i = 0; i < playerHand.length; i++) {
     if (playerHand[i].children.length > 0) {
       for (let j = playerHand[i].children.length - 1; j >= 0; j--) {
@@ -141,9 +155,23 @@ function removeCards() {
       dealerHand.removeChild(dealerHand.children[j]);
     }
   }
-
   newCard = undefined;
   newDownCard = undefined;
+  dealerHiddenCard = undefined;
+  for (let i = activePlayerHand.length - 1; i > 0; i--) {
+    activePlayerHand[i].removeAttribute("id");
+  }
+  playerOneScore = 0;
+  playerTwoScore = 0;
+  playerThreeScore = 0;
+  playerFourScore = 0;
+  dealerScore = 0;
+  mainMessage.textContent = "";
+  playerMessage[3].textContent = "";
+  playerMessage[2].textContent = "";
+  playerMessage[1].textContent = "";
+  playerMessage[0].textContent = "";
+  deckOfCardsIsLow();
 }
 
 function unhideDealerDownCard() {
@@ -155,22 +183,20 @@ function deckOfCardsIsLow() {
   if (activeDeck.length < 25) {
     activeDeck = [];
     setActiveDeck();
+    document.querySelector(".main-message").textContent = "Shuffling...";
+    setTimeout(() => {
+      document.querySelector(".main-message").textContent = "";
+    }, 3000);
   }
 }
 
-let playerOneScore = 0;
-let playerTwoScore = 0;
-let playerThreeScore = 0;
-let playerFourScore = 0;
-let dealerScore = 0;
-let total = 0;
-
-function getValueofCardNonAcePlayer() {
+function getPlayerValue() {
+  const allCards = document.querySelector("#active").children[0].children[0];
   let cardValue = 0;
-  for (let i = 0; i < playerHand[3].children.length; i++) {
-    let start = playerHand[3].children[i].getAttribute("src").indexOf("/");
-    let end = playerHand[3].children[i].getAttribute("src").indexOf(".");
-    let card = playerHand[3].children[i]
+  for (let i = 0; i < allCards.children.length; i++) {
+    let start = allCards.children[i].getAttribute("src").indexOf("/");
+    let end = allCards.children[i].getAttribute("src").indexOf(".");
+    let card = allCards.children[i]
       .getAttribute("src")
       .slice(start + 1, end - 1);
     if (card === "K" || card === "Q" || card === "J" || card === "T") {
@@ -180,9 +206,8 @@ function getValueofCardNonAcePlayer() {
     } else {
       cardValue += parseInt(card);
     }
-    if (checkTotalGreaterThanTwentyOne(cardValue)) {
+    if (cardValue > 21) {
       cardValue = "bust";
-      console.log(cardValue);
       return cardValue;
     }
   }
@@ -214,49 +239,152 @@ function dealerTotal() {
   } else {
     cardValue += parseInt(card);
   }
-  return cardValue;
-}
-
-function checkTotalGreaterThanTwentyOne(val) {
-  if (val > 21) {
-    return true;
-  }
+  dealerScore = cardValue;
+  return dealerScore;
 }
 
 function hitPlayer() {
-  let dealtCard = activeDeck.shift();
+  const allCards = document.querySelector("#active").children[0].children[0];
+  const dealtCard = activeDeck.shift();
   newCard = document.createElement("img");
   newCard.setAttribute("class", "card");
   newCard.setAttribute("src", `cards/${dealtCard}.svg`);
   newCard.setAttribute("style", "margin-top: 10px; margin-left: -65px;");
-  playerHand[3].appendChild(newCard);
-  getValueofCardNonAcePlayer();
-  bustPlayer();
+  allCards.appendChild(newCard);
+  getPlayerValue();
+  if (getPlayerValue() === "bust") {
+    if (playerOneScore === 0) {
+      playerOneScore = getPlayerValue();
+    } else if (playerTwoScore === 0) {
+      playerTwoScore = getPlayerValue();
+    } else if (playerThreeScore === 0) {
+      playerThreeScore = getPlayerValue();
+    } else if (playerFourScore === 0) {
+      playerFourScore = getPlayerValue();
+    }
+    activePlayerSelect();
+  }
 }
 
 function playerStay() {
-  hitBtn[3].disabled = true;
-  stayBtn[3].disabled = true;
-  doubleBtn[3].disabled = true;
-  // move to next player
+  const allBtns = document.querySelector("#active").children[2].children;
+  for (let i = 0; i < allBtns.length; i++) {
+    allBtns[i].disabled = true;
+  }
+  if (playerOneScore === 0) {
+    playerOneScore = getPlayerValue();
+  } else if (playerTwoScore === 0) {
+    playerTwoScore = getPlayerValue();
+  } else if (playerThreeScore === 0) {
+    playerThreeScore = getPlayerValue();
+  } else if (playerFourScore === 0) {
+    playerFourScore = getPlayerValue();
+  }
+  activePlayerSelect();
 }
 
-function bustPlayer() {
-  if (getValueofCardNonAcePlayer() === "bust") {
-    hitBtn[3].disabled = true;
-    stayBtn[3].disabled = true;
-    doubleBtn[3].disabled = true;
+function activePlayerSelect() {
+  const active = document.querySelector("#active");
+  if (activePlayerHand[3].getAttribute("id") === "active") {
+    active.removeAttribute("id");
+    activePlayerHand[2].setAttribute("id", "active");
+    for (let i = 0; i < activePlayerHand[2].children[2].children.length; i++) {
+      activePlayerHand[2].children[2].children[i].disabled = false;
+    }
+  } else if (activePlayerHand[2].getAttribute("id") === "active") {
+    active.removeAttribute("id");
+    activePlayerHand[1].setAttribute("id", "active");
+    for (let i = 0; i < activePlayerHand[1].children[2].children.length; i++) {
+      activePlayerHand[1].children[2].children[i].disabled = false;
+    }
+  } else if (activePlayerHand[1].getAttribute("id") === "active") {
+    active.removeAttribute("id");
+    activePlayerHand[0].setAttribute("id", "active");
+    for (let i = 0; i < activePlayerHand[0].children[2].children.length; i++) {
+      activePlayerHand[0].children[2].children[i].disabled = false;
+    }
+  } else if (activePlayerHand[0].getAttribute("id") === "active") {
+    active.removeAttribute("id");
+    unhideDealerDownCard();
   }
 }
-
-let gameOver = false;
 
 function blackJackDealer() {
+  const mainMessage = document.querySelector(".main-message");
   if (dealerTotal() === 21 && dealerHand.children.length === 2) {
-    gameOver = true;
+    unhideDealerDownCard();
+    mainMessage.textContent = "Dealer has BlackJack!!";
+    document.querySelector("#active").removeAttribute("id");
   }
 }
+
+function playerBlackJack() {
+  const playerMessage = document.querySelectorAll(".player-blackjack-message");
+  if (playerOneScore === 21) {
+    playerMessage[3].textContent = "BlackJack You Won!";
+  }
+  if (playerTwoScore === 21) {
+    playerMessage[2].textContent = "BlackJack You Won!";
+  }
+  if (playerOneScore === 21) {
+    playerMessage[1].textContent = "BlackJack You Won!";
+  }
+  if (playerOneScore === 21) {
+    playerMessage[0].textContent = "BlackJack You Won!";
+  }
+}
+
+function dealerHit() {
+  const mainMessage = document.querySelector(".main-message");
+
+  if (
+    playerOneScore !== "bust" ||
+    playerOTwoScore !== "bust" ||
+    playerThreeScore !== "bust" ||
+    playerFourScore !== "bust"
+  ) {
+    if (dealerScore < 17) {
+      const dealtCard = activeDeck.shift();
+      newCard = document.createElement("img");
+      newCard.setAttribute("class", "card");
+      newCard.setAttribute("src", `cards/${dealtCard}.svg`);
+      newCard.setAttribute("style", "margin-top: 10px; margin-left: -65px;");
+      dealerHand.appendChild(newCard);
+      let start = dealerHand.children[dealerHand.children.length - 1]
+        .getAttribute("src")
+        .indexOf("/");
+      let end = dealerHand.children[dealerHand.children.length - 1]
+        .getAttribute("src")
+        .indexOf(".");
+      let card = dealerHand.children[dealerHand.children.length - 1]
+        .getAttribute("src")
+        .slice(start + 1, end - 1);
+      if (card === "K" || card === "Q" || card === "J" || card === "T") {
+        dealerScore += 10;
+      } else if (card === "A") {
+        dealerScore;
+      } else {
+        dealerScore += parseInt(card);
+      }
+      if (dealerScore > 21) {
+        mainMessage.textContent = "Dealer Busted!!";
+      }
+      console.log(dealerScore);
+    }
+  }
+}
+
+function compareScoresToDealer() {
+  return;
+}
+
+hitBtn.forEach((element) => {
+  element.addEventListener("click", hitPlayer);
+});
+
+stayBtn.forEach((element) => {
+  element.addEventListener("click", playerStay);
+});
 
 startGame.addEventListener("click", setActiveDeck);
 dealCardsBtn.addEventListener("click", dealCards);
-hitBtn[3].addEventListener("click", hitPlayer);

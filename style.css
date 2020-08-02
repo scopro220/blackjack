@@ -93,7 +93,6 @@ h2 {
 }
 
 .player-container {
-  margin: 50px auto 0;
   display: flex;
   justify-content: space-evenly;
 }
@@ -126,7 +125,10 @@ button:focus {
   box-shadow: none;
 }
 
-.player-btn-container,
+.player-btn-container {
+  display: none;
+}
+
 .main-btn-container {
   display: flex;
   justify-content: space-around;
@@ -145,4 +147,36 @@ button:focus {
 .player-btn {
   width: 100%;
   margin-top: 8px;
+}
+
+.player-hand-container#active h2 {
+  color: #fff;
+}
+
+.player-hand-container#active .player-btn-container {
+  display: flex;
+  justify-content: space-around;
+}
+
+.main-message {
+  color: #fff;
+  font-size: 3rem;
+}
+
+.player-message-container {
+  margin: 50px auto 0;
+  display: flex;
+  justify-content: space-around;
+  align-items: baseline;
+  color: #fff;
+  font-size: 1.5rem;
+  text-align: center;
+}
+
+.player-blackjack-message:nth-child(1) {
+  padding-left: 20px;
+}
+
+.player-blackjack-message:nth-child(4) {
+  padding-right: 20px;
 }
