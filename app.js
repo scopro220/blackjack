@@ -137,7 +137,11 @@ function dealCards() {
     allBtns[i].disabled = false;
   }
   getPlayerValue();
-  blackJackDealer();
+  if (blackJackDealer()) {
+    blackJackDealer();
+  } else {
+    playerBlackJackCheck();
+  }
 }
 
 function removeCards() {
@@ -326,10 +330,10 @@ function playerBlackJack() {
   if (playerTwoScore === 21) {
     playerMessage[2].textContent = "BlackJack You Won!";
   }
-  if (playerOneScore === 21) {
+  if (playerThreeScore === 21) {
     playerMessage[1].textContent = "BlackJack You Won!";
   }
-  if (playerOneScore === 21) {
+  if (playerFourScore === 21) {
     playerMessage[0].textContent = "BlackJack You Won!";
   }
 }
@@ -368,8 +372,11 @@ function dealerHit() {
       }
       if (dealerScore > 21) {
         mainMessage.textContent = "Dealer Busted!!";
+        setTimeout(() => {
+          mainMessage.textContent = "";
+          removeCards();
+        }, 3000);
       }
-      console.log(dealerScore);
     }
   }
 }
@@ -388,3 +395,41 @@ stayBtn.forEach((element) => {
 
 startGame.addEventListener("click", setActiveDeck);
 dealCardsBtn.addEventListener("click", dealCards);
+
+function playerBlackJackCheck() {
+  for (let i = 0; i < playerHand.length; i++) {
+    let cardValue = 0;
+    for (let j = 0; j < playerHand[i].children.length; j++) {
+      let start = playerHand[i].children[j].getAttribute("src").indexOf("/");
+      let end = playerHand[i].children[j].getAttribute("src").indexOf(".");
+      let card = playerHand[i].children[j]
+        .getAttribute("src")
+        .slice(start + 1, end - 1);
+      if (card === "K" || card === "Q" || card === "J" || card === "T") {
+        cardValue += 10;
+      } else if (card === "A") {
+        cardValue += 11;
+      } else {
+        cardValue += parseInt(card);
+      }
+      console.log(card);
+    }
+    if (i === 0) {
+      playerFourScore = cardValue;
+      console.log(playerFourScore);
+    }
+    if (i === 1) {
+      playerThreeScore = cardValue;
+      console.log(playerThreeScore);
+    }
+    if (i === 2) {
+      playerTwoScore = cardValue;
+      console.log(playerTwoScore);
+    }
+    if (i === 3) {
+      playerOneScore = cardValue;
+      console.log(playerOneScore);
+    }
+  }
+  playerBlackJack();
+}
