@@ -9,7 +9,7 @@ const playerScoreDisplay = document.querySelectorAll(".player-score-displayed");
 const dealerScoreDisplay = document.querySelector(".dealer-score-displayed");
 const dealCardsBtn = document.querySelector(".deal-cards-btn");
 const totalCardsOnTable = document.querySelectorAll("img");
-const numberOfDecks = 1;
+const numberOfDecks = 2;
 let deck = [
   "2H",
   "2S",
@@ -256,6 +256,21 @@ function playerStay() {
   for (let i = 0; i < allBtns.length; i++) {
     allBtns[i].disabled = true;
   }
+  activePlayerSelect();
+}
+
+function playerDoubleDown() {
+  const allCards = document.querySelector("#active").children[0].children[0];
+  const dealtCard = activeDeck.shift();
+  newCard = document.createElement("img");
+  newCard.setAttribute("class", "card");
+  newCard.setAttribute("src", `cards/${dealtCard}.svg`);
+  newCard.setAttribute(
+    "style",
+    "margin-top: 10px; margin-left: -45px; transform: rotate(90deg);"
+  );
+  allCards.appendChild(newCard);
+  playerTotal();
   activePlayerSelect();
 }
 
@@ -538,6 +553,10 @@ hitBtn.forEach((element) => {
 
 stayBtn.forEach((element) => {
   element.addEventListener("click", playerStay);
+});
+
+doubleBtn.forEach((element) => {
+  element.addEventListener("click", playerDoubleDown);
 });
 
 window.addEventListener("DOMContentLoaded", setActiveDeck);
