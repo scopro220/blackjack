@@ -150,9 +150,12 @@ button:focus {
 }
 
 .player-hand-container#active h2 {
-  color: #fff;
+  color: #fd1f1f;
 }
 
+.player-hand-container#active .cards {
+  border: 1px solid #fd1f1f;
+}
 .player-hand-container#active .player-btn-container {
   display: flex;
   justify-content: space-around;
@@ -180,4 +183,8 @@ button:focus {
 
 .player-blackjack-message:nth-child(4) {
   padding-right: 20px;
+}
+
+.player-score-displayed {
+  color: #fff;
 }
