@@ -5,6 +5,8 @@ const hitBtn = document.querySelectorAll(".hit");
 const stayBtn = document.querySelectorAll(".stay");
 const doubleBtn = document.querySelectorAll(".double");
 const activePlayerHand = document.querySelectorAll(".player-hand-container");
+const playerScoreDisplay = document.querySelectorAll(".player-score-displayed");
+const dealerScoreDisplay = document.querySelector(".dealer-score-displayed");
 const dealCardsBtn = document.querySelector(".deal-cards-btn");
 const totalCardsOnTable = document.querySelectorAll("img");
 const numberOfDecks = 1;
@@ -73,6 +75,7 @@ let playerTwoScore = 0;
 let playerThreeScore = 0;
 let playerFourScore = 0;
 let dealerScore = 0;
+let currentPlayerCards = [];
 
 function setActiveDeck() {
   for (let i = 0; i < numberOfDecks; i++) {
@@ -106,7 +109,6 @@ function dealCards() {
         newCard.setAttribute("style", "margin-top: 10px; margin-left: -65px;");
       }
       playerHand[j].appendChild(newCard);
-      console.log(activeDeck);
     }
     let dealtCard = activeDeck.shift();
     newCard = document.createElement("img");
@@ -128,7 +130,6 @@ function dealCards() {
     } else {
       dealerHand.appendChild(newCard);
     }
-    console.log(activeDeck);
   }
   dealerHiddenCard = newCard;
   activePlayerHand[3].setAttribute("id", "active");
@@ -136,12 +137,18 @@ function dealCards() {
   for (let i = 0; i < allBtns.length; i++) {
     allBtns[i].disabled = false;
   }
-  getPlayerValue();
+  playerTotal();
+  playerScoreDisplay[3].textContent = `Score: ${playerOneScore}`;
+  playerScoreDisplay[2].textContent = `Score: ${playerTwoScore}`;
+  playerScoreDisplay[1].textContent = `Score: ${playerThreeScore}`;
+  playerScoreDisplay[0].textContent = `Score: ${playerFourScore}`;
+
   if (blackJackDealer()) {
     blackJackDealer();
   } else {
     playerBlackJackCheck();
   }
+  dealCardsBtn.disabled = true;
 }
 
 function removeCards() {
@@ -176,11 +183,19 @@ function removeCards() {
   playerMessage[1].textContent = "";
   playerMessage[0].textContent = "";
   deckOfCardsIsLow();
+  dealCardsBtn.disabled = false;
+  playerScoreDisplay[3].textContent = "";
+  playerScoreDisplay[2].textContent = "";
+  playerScoreDisplay[1].textContent = "";
+  playerScoreDisplay[0].textContent = "";
+  dealerScoreDisplay.textContent = "";
 }
 
 function unhideDealerDownCard() {
   dealerHand.removeChild(newDownCard);
   dealerHand.appendChild(dealerHiddenCard);
+  dealerScoreDisplay.textContent = ` : ${dealerScore}`;
+  dealerHit();
 }
 
 function deckOfCardsIsLow() {
@@ -192,31 +207,6 @@ function deckOfCardsIsLow() {
       document.querySelector(".main-message").textContent = "";
     }, 3000);
   }
-}
-
-function getPlayerValue() {
-  const allCards = document.querySelector("#active").children[0].children[0];
-  let cardValue = 0;
-  for (let i = 0; i < allCards.children.length; i++) {
-    let start = allCards.children[i].getAttribute("src").indexOf("/");
-    let end = allCards.children[i].getAttribute("src").indexOf(".");
-    let card = allCards.children[i]
-      .getAttribute("src")
-      .slice(start + 1, end - 1);
-    if (card === "K" || card === "Q" || card === "J" || card === "T") {
-      cardValue += 10;
-    } else if (card === "A") {
-      cardValue;
-    } else {
-      cardValue += parseInt(card);
-    }
-    if (cardValue > 21) {
-      cardValue = "bust";
-      return cardValue;
-    }
-  }
-  console.log(cardValue);
-  return cardValue;
 }
 
 function dealerTotal() {
@@ -255,17 +245,8 @@ function hitPlayer() {
   newCard.setAttribute("src", `cards/${dealtCard}.svg`);
   newCard.setAttribute("style", "margin-top: 10px; margin-left: -65px;");
   allCards.appendChild(newCard);
-  getPlayerValue();
-  if (getPlayerValue() === "bust") {
-    if (playerOneScore === 0) {
-      playerOneScore = getPlayerValue();
-    } else if (playerTwoScore === 0) {
-      playerTwoScore = getPlayerValue();
-    } else if (playerThreeScore === 0) {
-      playerThreeScore = getPlayerValue();
-    } else if (playerFourScore === 0) {
-      playerFourScore = getPlayerValue();
-    }
+  playerTotal();
+  if (playerTotal() === "bust") {
     activePlayerSelect();
   }
 }
@@ -274,15 +255,6 @@ function playerStay() {
   const allBtns = document.querySelector("#active").children[2].children;
   for (let i = 0; i < allBtns.length; i++) {
     allBtns[i].disabled = true;
-  }
-  if (playerOneScore === 0) {
-    playerOneScore = getPlayerValue();
-  } else if (playerTwoScore === 0) {
-    playerTwoScore = getPlayerValue();
-  } else if (playerThreeScore === 0) {
-    playerThreeScore = getPlayerValue();
-  } else if (playerFourScore === 0) {
-    playerFourScore = getPlayerValue();
   }
   activePlayerSelect();
 }
@@ -340,10 +312,9 @@ function playerBlackJack() {
 
 function dealerHit() {
   const mainMessage = document.querySelector(".main-message");
-
   if (
     playerOneScore !== "bust" ||
-    playerOTwoScore !== "bust" ||
+    playerTwoScore !== "bust" ||
     playerThreeScore !== "bust" ||
     playerFourScore !== "bust"
   ) {
@@ -375,26 +346,20 @@ function dealerHit() {
         setTimeout(() => {
           mainMessage.textContent = "";
           removeCards();
-        }, 3000);
+        }, 4500);
       }
+      dealerHit();
     }
+    compareScoresToDealer();
+  } else {
+    mainMessage.textContent = "Dealer wins all players busted";
+    setTimeout(() => {
+      mainMessage.textContent = "";
+      removeCards();
+    }, 4500);
   }
+  dealerScoreDisplay.textContent = ` : ${dealerScore}`;
 }
-
-function compareScoresToDealer() {
-  return;
-}
-
-hitBtn.forEach((element) => {
-  element.addEventListener("click", hitPlayer);
-});
-
-stayBtn.forEach((element) => {
-  element.addEventListener("click", playerStay);
-});
-
-startGame.addEventListener("click", setActiveDeck);
-dealCardsBtn.addEventListener("click", dealCards);
 
 function playerBlackJackCheck() {
   for (let i = 0; i < playerHand.length; i++) {
@@ -412,24 +377,168 @@ function playerBlackJackCheck() {
       } else {
         cardValue += parseInt(card);
       }
-      console.log(card);
     }
-    if (i === 0) {
-      playerFourScore = cardValue;
-      console.log(playerFourScore);
-    }
-    if (i === 1) {
-      playerThreeScore = cardValue;
-      console.log(playerThreeScore);
-    }
-    if (i === 2) {
-      playerTwoScore = cardValue;
-      console.log(playerTwoScore);
+    if (cardValue === 22) {
+      cardValue = 12;
     }
     if (i === 3) {
       playerOneScore = cardValue;
-      console.log(playerOneScore);
+      playerScoreDisplay[3].textContent = `Score: ${playerOneScore}`;
+    } else if (i === 2) {
+      playerTwoScore = cardValue;
+      playerScoreDisplay[2].textContent = `Score: ${playerTwoScore}`;
+    } else if (i === 1) {
+      playerThreeScore = cardValue;
+      playerScoreDisplay[1].textContent = `Score: ${playerThreeScore}`;
+    } else if (i === 0) {
+      playerFourScore = cardValue;
+      playerScoreDisplay[0].textContent = `Score: ${playerFourScore}`;
     }
   }
   playerBlackJack();
 }
+
+function compareScoresToDealer() {
+  const playerMessage = document.querySelectorAll(".player-blackjack-message");
+  const mainMessage = document.querySelector(".main-message");
+  if (playerOneScore > 21 || playerOneScore === "bust") {
+    playerMessage[3].textContent = "You lost";
+  } else if (
+    (playerOneScore !== 21 && playerOneScore > dealerScore) ||
+    dealerScore > 21
+  ) {
+    playerMessage[3].textContent = "You Won!";
+  } else if (playerOneScore < dealerScore && dealerScore < 22) {
+    playerMessage[3].textContent = "You lost";
+  } else if (playerOneScore === dealerScore) {
+    playerMessage[3].textContent = "It's a tie";
+  }
+  if (playerTwoScore > 21 || playerTwoScore === "bust") {
+    playerMessage[2].textContent = "You lost";
+  } else if (
+    (playerTwoScore !== 21 && playerTwoScore > dealerScore) ||
+    dealerScore > 21
+  ) {
+    playerMessage[2].textContent = "You Won!";
+  } else if (playerTwoScore < dealerScore && dealerScore < 22) {
+    playerMessage[2].textContent = "You lost";
+  } else if (playerTwoScore === dealerScore) {
+    playerMessage[2].textContent = "It's a tie";
+  }
+  if (playerThreeScore > 21 || playerThreeScore === "bust") {
+    playerMessage[1].textContent = "You lost";
+  } else if (
+    (playerThreeScore !== 21 && playerThreeScore > dealerScore) ||
+    dealerScore > 21
+  ) {
+    playerMessage[1].textContent = "You Won!";
+  } else if (playerThreeScore < dealerScore && dealerScore < 22) {
+    playerMessage[1].textContent = "You lost";
+  } else if (playerThreeScore === dealerScore) {
+    playerMessage[1].textContent = "It's a tie";
+  }
+  if (playerFourScore > 21 || playerFourScore === "bust") {
+    playerMessage[0].textContent = "You lost";
+  } else if (
+    (playerFourScore !== 21 && playerFourScore > dealerScore) ||
+    dealerScore > 21
+  ) {
+    playerMessage[0].textContent = "You Won!";
+  } else if (playerFourScore < dealerScore && dealerScore < 22) {
+    playerMessage[0].textContent = "You lost";
+  } else if (playerFourScore === dealerScore) {
+    playerMessage[0].textContent = "It's a tie";
+  }
+  setTimeout(() => {
+    mainMessage.textContent = "";
+    removeCards();
+  }, 4500);
+}
+
+function addCardsToCurrentPlayerArrary() {
+  const allCards = document.querySelector("#active").children[0].children[0];
+  for (let i = 0; i < allCards.children.length; i++) {
+    let start = allCards.children[i].getAttribute("src").indexOf("/");
+    let end = allCards.children[i].getAttribute("src").indexOf(".");
+    let card = allCards.children[i]
+      .getAttribute("src")
+      .slice(start + 1, end - 1);
+    currentPlayerCards.push(card);
+  }
+  return currentPlayerCards;
+}
+
+function playerTotal() {
+  const playerCurrentlyActive = document.querySelector("#active").children[1]
+    .textContent;
+  if (playerCurrentlyActive === "Player 1") {
+    currentPlayerCards = [];
+    addCardsToCurrentPlayerArrary();
+    playerOneScore = calculatePlayerTotal();
+    playerScoreDisplay[3].textContent = `Score: ${playerOneScore}`;
+    return playerOneScore;
+  } else if (playerCurrentlyActive === "Player 2") {
+    currentPlayerCards = [];
+    addCardsToCurrentPlayerArrary();
+    playerTwoScore = calculatePlayerTotal();
+    playerScoreDisplay[2].textContent = `Score: ${playerTwoScore}`;
+    return playerTwoScore;
+  } else if (playerCurrentlyActive === "Player 3") {
+    currentPlayerCards = [];
+    addCardsToCurrentPlayerArrary();
+    playerThreeScore = calculatePlayerTotal();
+    playerScoreDisplay[1].textContent = `Score: ${playerThreeScore}`;
+    return playerThreeScore;
+  } else if (playerCurrentlyActive === "Player 4") {
+    currentPlayerCards = [];
+    addCardsToCurrentPlayerArrary();
+    playerFourScore = calculatePlayerTotal();
+    playerScoreDisplay[0].textContent = `Score: ${playerFourScore}`;
+    return playerFourScore;
+  }
+}
+
+function calculatePlayerTotal() {
+  const aceFilter = currentPlayerCards
+    .filter((value) => value === "A" || value === "a")
+    .map((value) => value.toLowerCase());
+  const tensFilter = currentPlayerCards
+    .filter(
+      (value) =>
+        value === "K" || value === "J" || value === "Q" || value === "T"
+    )
+    .fill(10);
+  const numsFilter = currentPlayerCards
+    .filter((value) => parseInt(value) < 10)
+    .map((value) => parseInt(value));
+  tensFilter.push(aceFilter, numsFilter);
+
+  currentPlayerCards = tensFilter.flat().sort();
+  let currentPlayerCardsCopy = currentPlayerCards.slice();
+  let sum = 0;
+  for (let i = 0; i < currentPlayerCards.length; i++) {
+    if (currentPlayerCardsCopy[i] === "a") {
+      if (sum > 10) {
+        currentPlayerCardsCopy[i] = 1;
+      } else {
+        currentPlayerCardsCopy[i] = 11;
+      }
+    }
+    sum += currentPlayerCardsCopy[i];
+  }
+  if (sum > 21) {
+    sum = "bust";
+  }
+  return sum;
+}
+
+hitBtn.forEach((element) => {
+  element.addEventListener("click", hitPlayer);
+});
+
+stayBtn.forEach((element) => {
+  element.addEventListener("click", playerStay);
+});
+
+window.addEventListener("DOMContentLoaded", setActiveDeck);
+dealCardsBtn.addEventListener("click", dealCards);

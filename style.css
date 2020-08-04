@@ -6,12 +6,12 @@
 
 body {
   background-color: rgb(2, 82, 2);
-  font-family: "Archivo Black", sans-serif;
+  font-family: "Roboto", sans-serif;
 }
 
 .container {
   width: 80%;
-  margin: 25px auto 0;
+  margin: 10px auto 0;
   text-align: center;
 }
 

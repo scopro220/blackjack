@@ -4,7 +4,7 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link
-      href="https://fonts.googleapis.com/css2?family=Archivo+Black&display=swap"
+      href="https://fonts.googleapis.com/css2?family=Roboto&display=swap"
       rel="stylesheet"
     />
     <link rel="stylesheet" href="style.css" />
@@ -24,7 +24,6 @@
         <span class="spade">♠</span>
       </h1>
       <span class="main-btn-container">
-        <button class="shuffle-btn">Shuffle</button>
         <button class="deal-cards-btn">Deal Cards</button>
       </span>
       <div class="chip-container">
@@ -305,7 +304,7 @@
       </div>
       <div class="dealer-container">
         <div class="dealer-hand-container">
-          <h2>Dealer</h2>
+          <h2>Dealer<span class="dealer-score-displayed"></span></h2>
           <div class="cards">
             <div class="hand hhand-compact dealer"></div>
           </div>
@@ -324,6 +323,7 @@
             <div class="hand hhand-compact player"></div>
           </div>
           <h2>Player 4</h2>
+          <span class="player-score-displayed"></span>
           <span class="player-btn-container">
             <button class="player-btn hit">Hit</button>
             <button class="player-btn stay">Stay</button>
@@ -335,6 +335,7 @@
             <div class="hand hhand-compact player"></div>
           </div>
           <h2>Player 3</h2>
+          <span class="player-score-displayed"></span>
           <span class="player-btn-container">
             <button class="player-btn hit">Hit</button>
             <button class="player-btn stay">Stay</button>
@@ -346,6 +347,7 @@
             <div class="hand hhand-compact player"></div>
           </div>
           <h2>Player 2</h2>
+          <span class="player-score-displayed"></span>
           <span class="player-btn-container">
             <button class="player-btn hit">Hit</button>
             <button class="player-btn stay">Stay</button>
@@ -357,6 +359,7 @@
             <div class="hand hhand-compact player"></div>
           </div>
           <h2>Player 1</h2>
+          <span class="player-score-displayed"></span>
           <span class="player-btn-container">
             <button class="player-btn hit">Hit</button>
             <button class="player-btn stay">Stay</button>
