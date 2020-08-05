@@ -9,7 +9,9 @@ const playerScoreDisplay = document.querySelectorAll(".player-score-displayed");
 const dealerScoreDisplay = document.querySelector(".dealer-score-displayed");
 const dealCardsBtn = document.querySelector(".deal-cards-btn");
 const totalCardsOnTable = document.querySelectorAll("img");
-const numberOfDecks = 2;
+const mainMessage = document.querySelector(".main-message");
+const playerMessage = document.querySelectorAll(".player-blackjack-message");
+const numberOfDecks = 3;
 let deck = [
   "2H",
   "2S",
@@ -76,6 +78,7 @@ let playerThreeScore = 0;
 let playerFourScore = 0;
 let dealerScore = 0;
 let currentPlayerCards = [];
+let dealerCards = [];
 
 function setActiveDeck() {
   for (let i = 0; i < numberOfDecks; i++) {
@@ -142,18 +145,12 @@ function dealCards() {
   playerScoreDisplay[2].textContent = `Score: ${playerTwoScore}`;
   playerScoreDisplay[1].textContent = `Score: ${playerThreeScore}`;
   playerScoreDisplay[0].textContent = `Score: ${playerFourScore}`;
-
-  if (blackJackDealer()) {
-    blackJackDealer();
-  } else {
-    playerBlackJackCheck();
-  }
+  playerBlackJackCheck();
+  blackJackDealer();
   dealCardsBtn.disabled = true;
 }
 
 function removeCards() {
-  const mainMessage = document.querySelector(".main-message");
-  const playerMessage = document.querySelectorAll(".player-blackjack-message");
   for (let i = 0; i < playerHand.length; i++) {
     if (playerHand[i].children.length > 0) {
       for (let j = playerHand[i].children.length - 1; j >= 0; j--) {
@@ -209,7 +206,7 @@ function deckOfCardsIsLow() {
   }
 }
 
-function dealerTotal() {
+function dealerBlackJackCheck() {
   let cardValue = 0;
   let start = dealerHand.children[0].getAttribute("src").indexOf("/");
   let end = dealerHand.children[0].getAttribute("src").indexOf(".");
@@ -246,7 +243,7 @@ function hitPlayer() {
   newCard.setAttribute("style", "margin-top: 10px; margin-left: -65px;");
   allCards.appendChild(newCard);
   playerTotal();
-  if (playerTotal() === "bust") {
+  if (playerTotal() === "BUST") {
     activePlayerSelect();
   }
 }
@@ -301,16 +298,15 @@ function activePlayerSelect() {
 }
 
 function blackJackDealer() {
-  const mainMessage = document.querySelector(".main-message");
-  if (dealerTotal() === 21 && dealerHand.children.length === 2) {
+  if (dealerBlackJackCheck() === 21 && dealerHand.children.length === 2) {
     unhideDealerDownCard();
     mainMessage.textContent = "Dealer has BlackJack!!";
+    compareScoresToDealer();
     document.querySelector("#active").removeAttribute("id");
   }
 }
 
 function playerBlackJack() {
-  const playerMessage = document.querySelectorAll(".player-blackjack-message");
   if (playerOneScore === 21 && playerHand[3].children.length === 2) {
     playerMessage[3].textContent = "BlackJack You Won!";
   }
@@ -326,54 +322,41 @@ function playerBlackJack() {
 }
 
 function dealerHit() {
-  const mainMessage = document.querySelector(".main-message");
   if (
-    playerOneScore !== "bust" ||
-    playerTwoScore !== "bust" ||
-    playerThreeScore !== "bust" ||
-    playerFourScore !== "bust"
+    playerOneScore === "BUST" &&
+    playerTwoScore === "BUST" &&
+    playerThreeScore === "BUST" &&
+    playerFourScore === "BUST"
   ) {
+    mainMessage.textContent = "Dealer wins all players busted";
+    setTimeout(() => {
+      mainMessage.textContent = "";
+      removeCards();
+    }, 6000);
+  } else {
     if (dealerScore < 17) {
+      dealerCards = [];
       const dealtCard = activeDeck.shift();
       newCard = document.createElement("img");
       newCard.setAttribute("class", "card");
       newCard.setAttribute("src", `cards/${dealtCard}.svg`);
       newCard.setAttribute("style", "margin-top: 10px; margin-left: -65px;");
       dealerHand.appendChild(newCard);
-      let start = dealerHand.children[dealerHand.children.length - 1]
-        .getAttribute("src")
-        .indexOf("/");
-      let end = dealerHand.children[dealerHand.children.length - 1]
-        .getAttribute("src")
-        .indexOf(".");
-      let card = dealerHand.children[dealerHand.children.length - 1]
-        .getAttribute("src")
-        .slice(start + 1, end - 1);
-      if (card === "K" || card === "Q" || card === "J" || card === "T") {
-        dealerScore += 10;
-      } else if (card === "A") {
-        dealerScore;
-      } else {
-        dealerScore += parseInt(card);
-      }
-      if (dealerScore > 21) {
+      addCardstoDealerArray();
+      dealerScore = calculateDealerTotal();
+
+      if (dealerScore === "BUST") {
         mainMessage.textContent = "Dealer Busted!!";
         setTimeout(() => {
           mainMessage.textContent = "";
           removeCards();
-        }, 4500);
+        }, 6000);
       }
+      dealerScoreDisplay.textContent = ` : ${dealerScore}`;
       dealerHit();
     }
     compareScoresToDealer();
-  } else {
-    mainMessage.textContent = "Dealer wins all players busted";
-    setTimeout(() => {
-      mainMessage.textContent = "";
-      removeCards();
-    }, 4500);
   }
-  dealerScoreDisplay.textContent = ` : ${dealerScore}`;
 }
 
 function playerBlackJackCheck() {
@@ -414,61 +397,110 @@ function playerBlackJackCheck() {
 }
 
 function compareScoresToDealer() {
-  const playerMessage = document.querySelectorAll(".player-blackjack-message");
-  const mainMessage = document.querySelector(".main-message");
-  if (playerOneScore > 21 || playerOneScore === "bust") {
+  if (
+    playerOneScore === 21 &&
+    dealerScore === 21 &&
+    dealerHand.children.length === 2
+  ) {
+    playerMessage[3].textContent = "It's a tie";
+  } else if (playerOneScore === 21 && playerHand[3].children.length === 2) {
+    playerBlackJack();
+  } else if (
+    playerOneScore === dealerScore &&
+    playerTwoScore !== "BUST" &&
+    dealerScore !== "BUST"
+  ) {
+    playerMessage[3].textContent = "It's a tie";
+  } else if (
+    (playerOneScore < dealerScore && dealerScore < 22) ||
+    playerOneScore === "BUST"
+  ) {
     playerMessage[3].textContent = "You lost";
   } else if (
-    (playerOneScore !== 21 && playerOneScore > dealerScore) ||
-    dealerScore > 21
+    (playerOneScore < 22 && playerOneScore > dealerScore) ||
+    dealerScore === "BUST"
   ) {
     playerMessage[3].textContent = "You Won!";
-  } else if (playerOneScore < dealerScore && dealerScore < 22) {
-    playerMessage[3].textContent = "You lost";
-  } else if (playerOneScore === dealerScore) {
-    playerMessage[3].textContent = "It's a tie";
   }
-  if (playerTwoScore > 21 || playerTwoScore === "bust") {
+  if (
+    playerTwoScore === 21 &&
+    dealerScore === 21 &&
+    dealerHand.children.length === 2
+  ) {
+    playerMessage[2].textContent = "It's a tie";
+  } else if (playerTwoScore === 21 && playerHand[2].children.length === 2) {
+    playerBlackJack();
+  } else if (
+    playerTwoScore === dealerScore &&
+    playerTwoScore !== "BUST" &&
+    dealerScore !== "BUST"
+  ) {
+    playerMessage[2].textContent = "It's a tie";
+  } else if (
+    (playerTwoScore < dealerScore && dealerScore < 22) ||
+    playerTwoScore === "BUST"
+  ) {
     playerMessage[2].textContent = "You lost";
   } else if (
-    (playerTwoScore !== 21 && playerTwoScore > dealerScore) ||
-    dealerScore > 21
+    (playerTwoScore < 22 && playerTwoScore > dealerScore) ||
+    dealerScore === "BUST"
   ) {
     playerMessage[2].textContent = "You Won!";
-  } else if (playerTwoScore < dealerScore && dealerScore < 22) {
-    playerMessage[2].textContent = "You lost";
-  } else if (playerTwoScore === dealerScore) {
-    playerMessage[2].textContent = "It's a tie";
   }
-  if (playerThreeScore > 21 || playerThreeScore === "bust") {
+  if (
+    playerThreeScore === 21 &&
+    dealerScore === 21 &&
+    dealerHand.children.length === 2
+  ) {
+    playerMessage[1].textContent = "It's a tie";
+  } else if (playerThreeScore === 21 && playerHand[1].children.length === 2) {
+    playerBlackJack();
+  } else if (
+    playerThreeScore === dealerScore &&
+    playerTwoScore !== "BUST" &&
+    dealerScore !== "BUST"
+  ) {
+    playerMessage[1].textContent = "It's a tie";
+  } else if (
+    (playerThreeScore < dealerScore && dealerScore < 22) ||
+    playerThreeScore === "BUST"
+  ) {
     playerMessage[1].textContent = "You lost";
   } else if (
-    (playerThreeScore !== 21 && playerThreeScore > dealerScore) ||
-    dealerScore > 21
+    (playerThreeScore < 22 && playerThreeScore > dealerScore) ||
+    dealerScore === "BUST"
   ) {
     playerMessage[1].textContent = "You Won!";
-  } else if (playerThreeScore < dealerScore && dealerScore < 22) {
-    playerMessage[1].textContent = "You lost";
-  } else if (playerThreeScore === dealerScore) {
-    playerMessage[1].textContent = "It's a tie";
   }
-  if (playerFourScore > 21 || playerFourScore === "bust") {
+  if (
+    playerFourScore === 21 &&
+    dealerScore === 21 &&
+    dealerHand.children.length === 2
+  ) {
+    playerMessage[0].textContent = "It's a tie";
+  } else if (playerFourScore === 21 && playerHand[0].children.length === 2) {
+    playerBlackJack();
+  } else if (
+    playerFourScore === dealerScore &&
+    playerTwoScore !== "BUST" &&
+    dealerScore !== "BUST"
+  ) {
+    playerMessage[0].textContent = "It's a tie";
+  } else if (
+    (playerFourScore < dealerScore && dealerScore < 22) ||
+    playerFourScore === "BUST"
+  ) {
     playerMessage[0].textContent = "You lost";
   } else if (
-    (playerFourScore !== 21 && playerFourScore > dealerScore) ||
-    dealerScore > 21
+    (playerFourScore < 22 && playerFourScore > dealerScore) ||
+    dealerScore === "BUST"
   ) {
     playerMessage[0].textContent = "You Won!";
-  } else if (playerFourScore < dealerScore && dealerScore < 22) {
-    playerMessage[0].textContent = "You lost";
-  } else if (playerFourScore === dealerScore) {
-    playerMessage[0].textContent = "It's a tie";
   }
-  playerBlackJack();
   setTimeout(() => {
     mainMessage.textContent = "";
     removeCards();
-  }, 4500);
+  }, 6000);
 }
 
 function addCardsToCurrentPlayerArrary() {
@@ -543,7 +575,53 @@ function calculatePlayerTotal() {
     sum += currentPlayerCardsCopy[i];
   }
   if (sum > 21) {
-    sum = "bust";
+    sum = "BUST";
+  }
+  return sum;
+}
+
+function addCardstoDealerArray() {
+  for (let i = 0; i < dealerHand.children.length; i++) {
+    let start = dealerHand.children[i].getAttribute("src").indexOf("/");
+    let end = dealerHand.children[i].getAttribute("src").indexOf(".");
+    let card = dealerHand.children[i]
+      .getAttribute("src")
+      .slice(start + 1, end - 1);
+    dealerCards.push(card);
+  }
+  return dealerCards;
+}
+
+function calculateDealerTotal() {
+  const aceFilter = dealerCards
+    .filter((value) => value === "A" || value === "a")
+    .map((value) => value.toLowerCase());
+  const tensFilter = dealerCards
+    .filter(
+      (value) =>
+        value === "K" || value === "J" || value === "Q" || value === "T"
+    )
+    .fill(10);
+  const numsFilter = dealerCards
+    .filter((value) => parseInt(value) < 10)
+    .map((value) => parseInt(value));
+  tensFilter.push(aceFilter, numsFilter);
+
+  dealerCards = tensFilter.flat().sort();
+  let dealerCardsCopy = dealerCards.slice();
+  let sum = 0;
+  for (let i = 0; i < dealerCards.length; i++) {
+    if (dealerCardsCopy[i] === "a") {
+      if (sum > 10) {
+        dealerCardsCopy[i] = 1;
+      } else {
+        dealerCardsCopy[i] = 11;
+      }
+    }
+    sum += dealerCardsCopy[i];
+  }
+  if (sum > 21) {
+    sum = "BUST";
   }
   return sum;
 }
