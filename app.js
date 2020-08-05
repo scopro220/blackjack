@@ -311,16 +311,16 @@ function blackJackDealer() {
 
 function playerBlackJack() {
   const playerMessage = document.querySelectorAll(".player-blackjack-message");
-  if (playerOneScore === 21) {
+  if (playerOneScore === 21 && playerHand[3].children.length === 2) {
     playerMessage[3].textContent = "BlackJack You Won!";
   }
-  if (playerTwoScore === 21) {
+  if (playerTwoScore === 21 && playerHand[2].children.length === 2) {
     playerMessage[2].textContent = "BlackJack You Won!";
   }
-  if (playerThreeScore === 21) {
+  if (playerThreeScore === 21 && playerHand[1].children.length === 2) {
     playerMessage[1].textContent = "BlackJack You Won!";
   }
-  if (playerFourScore === 21) {
+  if (playerFourScore === 21 && playerHand[0].children.length === 2) {
     playerMessage[0].textContent = "BlackJack You Won!";
   }
 }
@@ -464,6 +464,7 @@ function compareScoresToDealer() {
   } else if (playerFourScore === dealerScore) {
     playerMessage[0].textContent = "It's a tie";
   }
+  playerBlackJack();
   setTimeout(() => {
     mainMessage.textContent = "";
     removeCards();
