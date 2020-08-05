@@ -523,24 +523,28 @@ function playerTotal() {
     currentPlayerCards = [];
     addCardsToCurrentPlayerArrary();
     playerOneScore = calculatePlayerTotal();
+    if (playerOneScore === 21) playerStay();
     playerScoreDisplay[3].textContent = `Score: ${playerOneScore}`;
     return playerOneScore;
   } else if (playerCurrentlyActive === "Player 2") {
     currentPlayerCards = [];
     addCardsToCurrentPlayerArrary();
     playerTwoScore = calculatePlayerTotal();
+    if (playerTwoScore === 21) playerStay();
     playerScoreDisplay[2].textContent = `Score: ${playerTwoScore}`;
     return playerTwoScore;
   } else if (playerCurrentlyActive === "Player 3") {
     currentPlayerCards = [];
     addCardsToCurrentPlayerArrary();
     playerThreeScore = calculatePlayerTotal();
+    if (playerThreeScore === 21) playerStay();
     playerScoreDisplay[1].textContent = `Score: ${playerThreeScore}`;
     return playerThreeScore;
   } else if (playerCurrentlyActive === "Player 4") {
     currentPlayerCards = [];
     addCardsToCurrentPlayerArrary();
     playerFourScore = calculatePlayerTotal();
+    if (playerFourScore === 21) playerStay();
     playerScoreDisplay[0].textContent = `Score: ${playerFourScore}`;
     return playerFourScore;
   }
