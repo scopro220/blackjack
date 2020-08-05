@@ -80,15 +80,6 @@ let dealerScore = 0;
 let currentPlayerCards = [];
 let dealerCards = [];
 
-function setActiveDeck() {
-  for (let i = 0; i < numberOfDecks; i++) {
-    activeDeck.push(deck);
-  }
-  activeDeck = activeDeck.flat();
-  shuffleArray(activeDeck);
-  return activeDeck;
-}
-
 // Durstenfeld shuffle algorithm
 function shuffleArray(array) {
   for (var i = array.length - 1; i > 0; i--) {
@@ -98,6 +89,15 @@ function shuffleArray(array) {
     array[j] = temp;
   }
   return array;
+}
+
+function setActiveDeck() {
+  for (let i = 0; i < numberOfDecks; i++) {
+    activeDeck.push(deck);
+  }
+  activeDeck = activeDeck.flat();
+  shuffleArray(activeDeck);
+  return activeDeck;
 }
 
 function dealCards() {
@@ -125,10 +125,7 @@ function dealCards() {
       newDownCard = document.createElement("img");
       newDownCard.setAttribute("class", "card");
       newDownCard.setAttribute("src", `cards/${hideCard}.svg`);
-      newDownCard.setAttribute(
-        "style",
-        "margin-top: 10px; margin-left: -65px;"
-      );
+      newDownCard.setAttribute("style", "margin-top: 10px; margin-left: -65px;");
       dealerHand.appendChild(newDownCard);
     } else {
       dealerHand.appendChild(newCard);
@@ -210,9 +207,7 @@ function dealerBlackJackCheck() {
   let cardValue = 0;
   let start = dealerHand.children[0].getAttribute("src").indexOf("/");
   let end = dealerHand.children[0].getAttribute("src").indexOf(".");
-  let card = dealerHand.children[0]
-    .getAttribute("src")
-    .slice(start + 1, end - 1);
+  let card = dealerHand.children[0].getAttribute("src").slice(start + 1, end - 1);
   if (card === "K" || card === "Q" || card === "J" || card === "T") {
     cardValue += 10;
   } else if (card === "A") {
@@ -262,10 +257,7 @@ function playerDoubleDown() {
   newCard = document.createElement("img");
   newCard.setAttribute("class", "card");
   newCard.setAttribute("src", `cards/${dealtCard}.svg`);
-  newCard.setAttribute(
-    "style",
-    "margin-top: 10px; margin-left: -45px; transform: rotate(90deg);"
-  );
+  newCard.setAttribute("style", "margin-top: 10px; margin-left: -45px; transform: rotate(90deg);");
   allCards.appendChild(newCard);
   playerTotal();
   activePlayerSelect();
@@ -365,9 +357,7 @@ function playerBlackJackCheck() {
     for (let j = 0; j < playerHand[i].children.length; j++) {
       let start = playerHand[i].children[j].getAttribute("src").indexOf("/");
       let end = playerHand[i].children[j].getAttribute("src").indexOf(".");
-      let card = playerHand[i].children[j]
-        .getAttribute("src")
-        .slice(start + 1, end - 1);
+      let card = playerHand[i].children[j].getAttribute("src").slice(start + 1, end - 1);
       if (card === "K" || card === "Q" || card === "J" || card === "T") {
         cardValue += 10;
       } else if (card === "A") {
@@ -397,11 +387,7 @@ function playerBlackJackCheck() {
 }
 
 function compareScoresToDealer() {
-  if (
-    playerOneScore === 21 &&
-    dealerScore === 21 &&
-    dealerHand.children.length === 2
-  ) {
+  if (playerOneScore === 21 && dealerScore === 21 && dealerHand.children.length === 2) {
     playerMessage[3].textContent = "It's a tie";
   } else if (playerOneScore === 21 && playerHand[3].children.length === 2) {
     playerBlackJack();
@@ -411,22 +397,12 @@ function compareScoresToDealer() {
     dealerScore !== "BUST"
   ) {
     playerMessage[3].textContent = "It's a tie";
-  } else if (
-    (playerOneScore < dealerScore && dealerScore < 22) ||
-    playerOneScore === "BUST"
-  ) {
+  } else if ((playerOneScore < dealerScore && dealerScore < 22) || playerOneScore === "BUST") {
     playerMessage[3].textContent = "You lost";
-  } else if (
-    (playerOneScore < 22 && playerOneScore > dealerScore) ||
-    dealerScore === "BUST"
-  ) {
+  } else if ((playerOneScore < 22 && playerOneScore > dealerScore) || dealerScore === "BUST") {
     playerMessage[3].textContent = "You Won!";
   }
-  if (
-    playerTwoScore === 21 &&
-    dealerScore === 21 &&
-    dealerHand.children.length === 2
-  ) {
+  if (playerTwoScore === 21 && dealerScore === 21 && dealerHand.children.length === 2) {
     playerMessage[2].textContent = "It's a tie";
   } else if (playerTwoScore === 21 && playerHand[2].children.length === 2) {
     playerBlackJack();
@@ -436,22 +412,12 @@ function compareScoresToDealer() {
     dealerScore !== "BUST"
   ) {
     playerMessage[2].textContent = "It's a tie";
-  } else if (
-    (playerTwoScore < dealerScore && dealerScore < 22) ||
-    playerTwoScore === "BUST"
-  ) {
+  } else if ((playerTwoScore < dealerScore && dealerScore < 22) || playerTwoScore === "BUST") {
     playerMessage[2].textContent = "You lost";
-  } else if (
-    (playerTwoScore < 22 && playerTwoScore > dealerScore) ||
-    dealerScore === "BUST"
-  ) {
+  } else if ((playerTwoScore < 22 && playerTwoScore > dealerScore) || dealerScore === "BUST") {
     playerMessage[2].textContent = "You Won!";
   }
-  if (
-    playerThreeScore === 21 &&
-    dealerScore === 21 &&
-    dealerHand.children.length === 2
-  ) {
+  if (playerThreeScore === 21 && dealerScore === 21 && dealerHand.children.length === 2) {
     playerMessage[1].textContent = "It's a tie";
   } else if (playerThreeScore === 21 && playerHand[1].children.length === 2) {
     playerBlackJack();
@@ -461,22 +427,12 @@ function compareScoresToDealer() {
     dealerScore !== "BUST"
   ) {
     playerMessage[1].textContent = "It's a tie";
-  } else if (
-    (playerThreeScore < dealerScore && dealerScore < 22) ||
-    playerThreeScore === "BUST"
-  ) {
+  } else if ((playerThreeScore < dealerScore && dealerScore < 22) || playerThreeScore === "BUST") {
     playerMessage[1].textContent = "You lost";
-  } else if (
-    (playerThreeScore < 22 && playerThreeScore > dealerScore) ||
-    dealerScore === "BUST"
-  ) {
+  } else if ((playerThreeScore < 22 && playerThreeScore > dealerScore) || dealerScore === "BUST") {
     playerMessage[1].textContent = "You Won!";
   }
-  if (
-    playerFourScore === 21 &&
-    dealerScore === 21 &&
-    dealerHand.children.length === 2
-  ) {
+  if (playerFourScore === 21 && dealerScore === 21 && dealerHand.children.length === 2) {
     playerMessage[0].textContent = "It's a tie";
   } else if (playerFourScore === 21 && playerHand[0].children.length === 2) {
     playerBlackJack();
@@ -486,15 +442,9 @@ function compareScoresToDealer() {
     dealerScore !== "BUST"
   ) {
     playerMessage[0].textContent = "It's a tie";
-  } else if (
-    (playerFourScore < dealerScore && dealerScore < 22) ||
-    playerFourScore === "BUST"
-  ) {
+  } else if ((playerFourScore < dealerScore && dealerScore < 22) || playerFourScore === "BUST") {
     playerMessage[0].textContent = "You lost";
-  } else if (
-    (playerFourScore < 22 && playerFourScore > dealerScore) ||
-    dealerScore === "BUST"
-  ) {
+  } else if ((playerFourScore < 22 && playerFourScore > dealerScore) || dealerScore === "BUST") {
     playerMessage[0].textContent = "You Won!";
   }
   setTimeout(() => {
@@ -508,43 +458,36 @@ function addCardsToCurrentPlayerArrary() {
   for (let i = 0; i < allCards.children.length; i++) {
     let start = allCards.children[i].getAttribute("src").indexOf("/");
     let end = allCards.children[i].getAttribute("src").indexOf(".");
-    let card = allCards.children[i]
-      .getAttribute("src")
-      .slice(start + 1, end - 1);
+    let card = allCards.children[i].getAttribute("src").slice(start + 1, end - 1);
     currentPlayerCards.push(card);
   }
   return currentPlayerCards;
 }
 
 function playerTotal() {
-  const playerCurrentlyActive = document.querySelector("#active").children[1]
-    .textContent;
+  const playerCurrentlyActive = document.querySelector("#active").children[1].textContent;
   if (playerCurrentlyActive === "Player 1") {
     currentPlayerCards = [];
     addCardsToCurrentPlayerArrary();
     playerOneScore = calculatePlayerTotal();
-    if (playerOneScore === 21) playerStay();
     playerScoreDisplay[3].textContent = `Score: ${playerOneScore}`;
     return playerOneScore;
   } else if (playerCurrentlyActive === "Player 2") {
     currentPlayerCards = [];
     addCardsToCurrentPlayerArrary();
     playerTwoScore = calculatePlayerTotal();
-    if (playerTwoScore === 21) playerStay();
     playerScoreDisplay[2].textContent = `Score: ${playerTwoScore}`;
     return playerTwoScore;
   } else if (playerCurrentlyActive === "Player 3") {
     currentPlayerCards = [];
     addCardsToCurrentPlayerArrary();
     playerThreeScore = calculatePlayerTotal();
-    if (playerThreeScore === 21) playerStay();
     playerScoreDisplay[1].textContent = `Score: ${playerThreeScore}`;
     return playerThreeScore;
   } else if (playerCurrentlyActive === "Player 4") {
     currentPlayerCards = [];
     addCardsToCurrentPlayerArrary();
     playerFourScore = calculatePlayerTotal();
-    if (playerFourScore === 21) playerStay();
     playerScoreDisplay[0].textContent = `Score: ${playerFourScore}`;
     return playerFourScore;
   }
@@ -555,10 +498,7 @@ function calculatePlayerTotal() {
     .filter((value) => value === "A" || value === "a")
     .map((value) => value.toLowerCase());
   const tensFilter = currentPlayerCards
-    .filter(
-      (value) =>
-        value === "K" || value === "J" || value === "Q" || value === "T"
-    )
+    .filter((value) => value === "K" || value === "J" || value === "Q" || value === "T")
     .fill(10);
   const numsFilter = currentPlayerCards
     .filter((value) => parseInt(value) < 10)
@@ -588,9 +528,7 @@ function addCardstoDealerArray() {
   for (let i = 0; i < dealerHand.children.length; i++) {
     let start = dealerHand.children[i].getAttribute("src").indexOf("/");
     let end = dealerHand.children[i].getAttribute("src").indexOf(".");
-    let card = dealerHand.children[i]
-      .getAttribute("src")
-      .slice(start + 1, end - 1);
+    let card = dealerHand.children[i].getAttribute("src").slice(start + 1, end - 1);
     dealerCards.push(card);
   }
   return dealerCards;
@@ -601,10 +539,7 @@ function calculateDealerTotal() {
     .filter((value) => value === "A" || value === "a")
     .map((value) => value.toLowerCase());
   const tensFilter = dealerCards
-    .filter(
-      (value) =>
-        value === "K" || value === "J" || value === "Q" || value === "T"
-    )
+    .filter((value) => value === "K" || value === "J" || value === "Q" || value === "T")
     .fill(10);
   const numsFilter = dealerCards
     .filter((value) => parseInt(value) < 10)
