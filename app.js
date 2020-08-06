@@ -145,6 +145,7 @@ function dealCards() {
   playerBlackJackCheck();
   blackJackDealer();
   dealCardsBtn.disabled = true;
+  if (playerOneScore === 21) playerStay();
 }
 
 function removeCards() {
@@ -240,6 +241,8 @@ function hitPlayer() {
   playerTotal();
   if (playerTotal() === "BUST") {
     activePlayerSelect();
+  } else if (playerTotal() === 21) {
+    activePlayerSelect();
   }
 }
 
@@ -264,26 +267,28 @@ function playerDoubleDown() {
 }
 
 function activePlayerSelect() {
-  const active = document.querySelector("#active");
   if (activePlayerHand[3].getAttribute("id") === "active") {
     active.removeAttribute("id");
     activePlayerHand[2].setAttribute("id", "active");
     for (let i = 0; i < activePlayerHand[2].children[2].children.length; i++) {
       activePlayerHand[2].children[2].children[i].disabled = false;
     }
+    if (playerTwoScore === 21) playerStay();
   } else if (activePlayerHand[2].getAttribute("id") === "active") {
     active.removeAttribute("id");
     activePlayerHand[1].setAttribute("id", "active");
     for (let i = 0; i < activePlayerHand[1].children[2].children.length; i++) {
       activePlayerHand[1].children[2].children[i].disabled = false;
     }
+    if (playerThreeScore === 21) playerStay();
   } else if (activePlayerHand[1].getAttribute("id") === "active") {
     active.removeAttribute("id");
     activePlayerHand[0].setAttribute("id", "active");
     for (let i = 0; i < activePlayerHand[0].children[2].children.length; i++) {
       activePlayerHand[0].children[2].children[i].disabled = false;
     }
-  } else if (activePlayerHand[0].getAttribute("id") === "active") {
+    if (playerFourScore === 21) playerStay();
+  } else {
     active.removeAttribute("id");
     unhideDealerDownCard();
   }
