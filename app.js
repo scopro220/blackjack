@@ -173,16 +173,10 @@ function removeCards() {
   playerFourScore = 0;
   dealerScore = 0;
   mainMessage.textContent = "";
-  playerMessage[3].textContent = "";
-  playerMessage[2].textContent = "";
-  playerMessage[1].textContent = "";
-  playerMessage[0].textContent = "";
+  playerMessage.forEach((element) => (element.textContent = ""));
   deckOfCardsIsLow();
   dealCardsBtn.disabled = false;
-  playerScoreDisplay[3].textContent = "";
-  playerScoreDisplay[2].textContent = "";
-  playerScoreDisplay[1].textContent = "";
-  playerScoreDisplay[0].textContent = "";
+  playerScoreDisplay.forEach((element) => (element.textContent = ""));
   dealerScoreDisplay.textContent = "";
 }
 
@@ -255,15 +249,20 @@ function playerStay() {
 }
 
 function playerDoubleDown() {
-  const allCards = document.querySelector("#active").children[0].children[0];
-  const dealtCard = activeDeck.shift();
-  newCard = document.createElement("img");
-  newCard.setAttribute("class", "card");
-  newCard.setAttribute("src", `cards/${dealtCard}.svg`);
-  newCard.setAttribute("style", "margin-top: 10px; margin-left: -45px; transform: rotate(90deg);");
-  allCards.appendChild(newCard);
-  playerTotal();
-  activePlayerSelect();
+  if (active.children[0].children[0].children.length === 2) {
+    const allCards = document.querySelector("#active").children[0].children[0];
+    const dealtCard = activeDeck.shift();
+    newCard = document.createElement("img");
+    newCard.setAttribute("class", "card");
+    newCard.setAttribute("src", `cards/${dealtCard}.svg`);
+    newCard.setAttribute(
+      "style",
+      "margin-top: 10px; margin-left: -45px; transform: rotate(90deg);"
+    );
+    allCards.appendChild(newCard);
+    playerTotal();
+    activePlayerSelect();
+  }
 }
 
 function activePlayerSelect() {
