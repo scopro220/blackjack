@@ -80,6 +80,18 @@ let dealerScore = 0;
 let currentPlayerCards = [];
 let dealerCards = [];
 
+let playerOneTotalMoney = 500;
+let playerTwoTotalMoney = 500;
+let playerThreeTotalMoney = 500;
+let playerFourTotalMoney = 500;
+
+let playerOneBetAmount = document.getElementById("p1betamount").value;
+let playerTwoBetAmount = document.getElementById("p2betamount").value;
+let playerThreeBetAmount = document.getElementById("p3betamount").value;
+let playerFourBetAmount = document.getElementById("p4betamount").value;
+
+const playerTotals = document.querySelectorAll(".total");
+
 // Durstenfeld shuffle algorithm
 function shuffleArray(array) {
   for (var i = array.length - 1; i > 0; i--) {
@@ -390,6 +402,7 @@ function playerBlackJackCheck() {
 }
 
 function compareScoresToDealer() {
+  doubleDownBetAmount();
   if (playerOneScore === 21 && dealerScore === 21 && dealerHand.children.length === 2) {
     playerMessage[3].textContent = "It's a tie";
     playerOneTotalMoney;
@@ -590,6 +603,53 @@ function calculateDealerTotal() {
   return sum;
 }
 
+function displayPlayerTotals() {
+  playerTotals[3].textContent = playerOneTotalMoney;
+  playerTotals[2].textContent = playerTwoTotalMoney;
+  playerTotals[1].textContent = playerThreeTotalMoney;
+  playerTotals[0].textContent = playerFourTotalMoney;
+}
+
+function doubleDownBetAmount() {
+  if (
+    playerHand[3].children[2] !== undefined &&
+    playerHand[3].children[2].getAttribute("style").includes("transform")
+  ) {
+    playerOneBetAmount *= 2;
+  }
+  if (
+    playerHand[2].children[2] !== undefined &&
+    playerHand[2].children[2].getAttribute("style").includes("transform")
+  ) {
+    playerTwoBetAmount *= 2;
+  }
+  if (
+    playerHand[1].children[2] !== undefined &&
+    playerHand[1].children[2].getAttribute("style").includes("transform")
+  ) {
+    playerThreeBetAmount *= 2;
+  }
+  if (
+    playerHand[0].children[2] !== undefined &&
+    playerHand[0].children[2].getAttribute("style").includes("transform")
+  ) {
+    playerFourBetAmount *= 2;
+  }
+}
+
+function closeModal() {
+  playerOneBetAmount = document.getElementById("p1betamount").value;
+  playerTwoBetAmount = document.getElementById("p2betamount").value;
+  playerThreeBetAmount = document.getElementById("p3betamount").value;
+  playerFourBetAmount = document.getElementById("p4betamount").value;
+  document.querySelectorAll(".modal")[0].style.display = "none";
+}
+
+function openModal() {
+  displayPlayerTotals();
+  document.querySelectorAll(".modal")[0].style.display = "block";
+}
+
 hitBtn.forEach((element) => {
   element.addEventListener("click", hitPlayer);
 });
@@ -608,35 +668,3 @@ window.addEventListener("DOMContentLoaded", () => {
   setTimeout(closeModal, 15000);
 });
 dealCardsBtn.addEventListener("click", dealCards);
-
-let playerOneTotalMoney = 500;
-let playerTwoTotalMoney = 500;
-let playerThreeTotalMoney = 500;
-let playerFourTotalMoney = 500;
-
-let playerOneBetAmount = document.getElementById("p1betamount").value;
-let playerTwoBetAmount = document.getElementById("p2betamount").value;
-let playerThreeBetAmount = document.getElementById("p3betamount").value;
-let playerFourBetAmount = document.getElementById("p4betamount").value;
-
-const playerTotals = document.querySelectorAll(".total");
-
-function displayPlayerTotals() {
-  playerTotals[3].textContent = playerOneTotalMoney;
-  playerTotals[2].textContent = playerTwoTotalMoney;
-  playerTotals[1].textContent = playerThreeTotalMoney;
-  playerTotals[0].textContent = playerFourTotalMoney;
-}
-
-function closeModal() {
-  playerOneBetAmount = document.getElementById("p1betamount").value;
-  playerTwoBetAmount = document.getElementById("p2betamount").value;
-  playerThreeBetAmount = document.getElementById("p3betamount").value;
-  playerFourBetAmount = document.getElementById("p4betamount").value;
-  document.querySelectorAll(".modal")[0].style.display = "none";
-}
-
-function openModal() {
-  displayPlayerTotals();
-  document.querySelectorAll(".modal")[0].style.display = "block";
-}
