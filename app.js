@@ -330,7 +330,7 @@ function dealerHit() {
       removeCards();
     }, 6000);
   } else {
-    if (dealerScore < 17) {
+    while (dealerScore < 17) {
       dealerCards = [];
       const dealtCard = activeDeck.shift();
       newCard = document.createElement("img");
@@ -349,10 +349,9 @@ function dealerHit() {
         }, 6000);
       }
       dealerScoreDisplay.textContent = ` : ${dealerScore}`;
-      dealerHit();
     }
-    compareScoresToDealer();
   }
+  compareScoresToDealer();
 }
 
 function playerBlackJackCheck() {
@@ -393,67 +392,89 @@ function playerBlackJackCheck() {
 function compareScoresToDealer() {
   if (playerOneScore === 21 && dealerScore === 21 && dealerHand.children.length === 2) {
     playerMessage[3].textContent = "It's a tie";
+    playerOneTotalMoney;
   } else if (playerOneScore === 21 && playerHand[3].children.length === 2) {
     playerBlackJack();
+    playerOneTotalMoney += parseInt(playerOneBetAmount) * 1.5;
   } else if (
     playerOneScore === dealerScore &&
     playerTwoScore !== "BUST" &&
     dealerScore !== "BUST"
   ) {
     playerMessage[3].textContent = "It's a tie";
+    playerOneTotalMoney;
   } else if ((playerOneScore < dealerScore && dealerScore < 22) || playerOneScore === "BUST") {
     playerMessage[3].textContent = "You lost";
+    playerOneTotalMoney -= parseInt(playerOneBetAmount);
   } else if ((playerOneScore < 22 && playerOneScore > dealerScore) || dealerScore === "BUST") {
     playerMessage[3].textContent = "You Won!";
+    playerOneTotalMoney += parseInt(playerOneBetAmount);
   }
   if (playerTwoScore === 21 && dealerScore === 21 && dealerHand.children.length === 2) {
     playerMessage[2].textContent = "It's a tie";
+    playerTwoTotalMoney;
   } else if (playerTwoScore === 21 && playerHand[2].children.length === 2) {
     playerBlackJack();
+    playerTwoTotalMoney += parseInt(playerTwoBetAmount) * 1.5;
   } else if (
     playerTwoScore === dealerScore &&
     playerTwoScore !== "BUST" &&
     dealerScore !== "BUST"
   ) {
     playerMessage[2].textContent = "It's a tie";
+    playerTwoTotalMoney;
   } else if ((playerTwoScore < dealerScore && dealerScore < 22) || playerTwoScore === "BUST") {
     playerMessage[2].textContent = "You lost";
+    playerTwoTotalMoney -= parseInt(playerTwoBetAmount);
   } else if ((playerTwoScore < 22 && playerTwoScore > dealerScore) || dealerScore === "BUST") {
     playerMessage[2].textContent = "You Won!";
+    playerTwoTotalMoney += parseInt(playerTwoBetAmount);
   }
   if (playerThreeScore === 21 && dealerScore === 21 && dealerHand.children.length === 2) {
     playerMessage[1].textContent = "It's a tie";
+    playerThreeTotalMoney;
   } else if (playerThreeScore === 21 && playerHand[1].children.length === 2) {
     playerBlackJack();
+    playerThreeTotalMoney += parseInt(playerThreeBetAmount) * 1.5;
   } else if (
     playerThreeScore === dealerScore &&
     playerTwoScore !== "BUST" &&
     dealerScore !== "BUST"
   ) {
     playerMessage[1].textContent = "It's a tie";
+    playerThreeTotalMoney;
   } else if ((playerThreeScore < dealerScore && dealerScore < 22) || playerThreeScore === "BUST") {
     playerMessage[1].textContent = "You lost";
+    playerThreeTotalMoney -= parseInt(playerThreeBetAmount);
   } else if ((playerThreeScore < 22 && playerThreeScore > dealerScore) || dealerScore === "BUST") {
     playerMessage[1].textContent = "You Won!";
+    playerThreeTotalMoney += parseInt(playerThreeBetAmount);
   }
   if (playerFourScore === 21 && dealerScore === 21 && dealerHand.children.length === 2) {
     playerMessage[0].textContent = "It's a tie";
+    playerFourTotalMoney;
   } else if (playerFourScore === 21 && playerHand[0].children.length === 2) {
     playerBlackJack();
+    playerFourTotalMoney += parseInt(playerFourBetAmount) * 1.5;
   } else if (
     playerFourScore === dealerScore &&
     playerTwoScore !== "BUST" &&
     dealerScore !== "BUST"
   ) {
     playerMessage[0].textContent = "It's a tie";
+    playerFourTotalMoney;
   } else if ((playerFourScore < dealerScore && dealerScore < 22) || playerFourScore === "BUST") {
     playerMessage[0].textContent = "You lost";
+    playerFourTotalMoney -= parseInt(playerFourBetAmount);
   } else if ((playerFourScore < 22 && playerFourScore > dealerScore) || dealerScore === "BUST") {
     playerMessage[0].textContent = "You Won!";
+    playerFourTotalMoney += parseInt(playerFourBetAmount);
   }
   setTimeout(() => {
     mainMessage.textContent = "";
     removeCards();
+    openModal();
+    setTimeout(closeModal, 15000);
   }, 6000);
 }
 
@@ -581,5 +602,41 @@ doubleBtn.forEach((element) => {
   element.addEventListener("click", playerDoubleDown);
 });
 
-window.addEventListener("DOMContentLoaded", setActiveDeck);
+window.addEventListener("DOMContentLoaded", () => {
+  setActiveDeck();
+  displayPlayerTotals();
+  setTimeout(closeModal, 15000);
+});
 dealCardsBtn.addEventListener("click", dealCards);
+
+let playerOneTotalMoney = 500;
+let playerTwoTotalMoney = 500;
+let playerThreeTotalMoney = 500;
+let playerFourTotalMoney = 500;
+
+let playerOneBetAmount = document.getElementById("p1betamount").value;
+let playerTwoBetAmount = document.getElementById("p2betamount").value;
+let playerThreeBetAmount = document.getElementById("p3betamount").value;
+let playerFourBetAmount = document.getElementById("p4betamount").value;
+
+const playerTotals = document.querySelectorAll(".total");
+
+function displayPlayerTotals() {
+  playerTotals[3].textContent = playerOneTotalMoney;
+  playerTotals[2].textContent = playerTwoTotalMoney;
+  playerTotals[1].textContent = playerThreeTotalMoney;
+  playerTotals[0].textContent = playerFourTotalMoney;
+}
+
+function closeModal() {
+  playerOneBetAmount = document.getElementById("p1betamount").value;
+  playerTwoBetAmount = document.getElementById("p2betamount").value;
+  playerThreeBetAmount = document.getElementById("p3betamount").value;
+  playerFourBetAmount = document.getElementById("p4betamount").value;
+  document.querySelectorAll(".modal")[0].style.display = "none";
+}
+
+function openModal() {
+  displayPlayerTotals();
+  document.querySelectorAll(".modal")[0].style.display = "block";
+}
