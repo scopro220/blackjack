@@ -487,7 +487,7 @@ function compareScoresToDealer() {
     mainMessage.textContent = "";
     removeCards();
     openModal();
-    setTimeout(closeModal, 15000);
+    setTimeout(closeModal, 7000);
   }, 6000);
 }
 
@@ -665,6 +665,6 @@ doubleBtn.forEach((element) => {
 window.addEventListener("DOMContentLoaded", () => {
   setActiveDeck();
   displayPlayerTotals();
-  setTimeout(closeModal, 15000);
+  setTimeout(closeModal, 7000);
 });
 dealCardsBtn.addEventListener("click", dealCards);
